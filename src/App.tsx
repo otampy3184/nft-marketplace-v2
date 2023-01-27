@@ -5,7 +5,7 @@ import { Button } from "@mui/material";
 
 import Marketplace from "./abi/Marketplace.json";
 import { ethers } from 'ethers';
-const CONTRACT_ADDRESS = "0xc74c1d2023B9F9Bfc5515B101BcB9b134300839f";
+const CONTRACT_ADDRESS = "0x6295CCd1f65979bC62Cd7bC7130a503e4962bd28";
 
 function App() {
   const [currentAccount, setCurrentAccount] = useState("");
@@ -47,6 +47,23 @@ function App() {
     }
   }
 
+  const getNFTInfo =async () => {
+    try {
+      const provider = new ethers.providers.Web3Provider((window as any).ethereum);
+      const signer = provider.getSigner();
+      const marketplaceContract = new ethers.Contract(
+        CONTRACT_ADDRESS,
+        Marketplace.abi,
+        signer
+      )
+      let allNFTs: Array<Array<any>>;
+      allNFTs = await marketplaceContract.getAllNFTs();
+      console.log(allNFTs[0][0]);
+    } catch (error){
+      console.log(error)
+    }
+  }
+
   return (
     <div className="App">
       <Button variant='contained' color='primary' onClick={connectWallet}>
@@ -54,6 +71,9 @@ function App() {
       </Button>
       <Button variant='contained' color='primary' onClick={mintNFT}>
         mint nft
+      </Button>
+      <Button variant='contained' color='primary' onClick={getNFTInfo}>
+        get nft info
       </Button>
     </div>
   );

@@ -92,4 +92,9 @@ contract Marketplace is ERC721 {
         );
         return output;
     }
+
+    function getAllNFTs() public view returns (NFTAttributes[] memory) {
+        NFTAttributes[] memory allNFTs = NFTArray;
+        return allNFTs;
+    }
 }
