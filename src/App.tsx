@@ -2,10 +2,13 @@ import React, { useState, useEffect } from 'react';
 import './App.css';
 
 import { Button, TextField } from "@mui/material";
+import { CIDString, Web3File, Web3Storage } from "web3.storage"
 
 import Marketplace from "./abi/Marketplace.json";
 import { ethers } from 'ethers';
 const CONTRACT_ADDRESS = "0x6295CCd1f65979bC62Cd7bC7130a503e4962bd28";
+const API_KEY = "eyJzdWIiOiJkaWQ6ZXRocjoweDEyZUM3OTFBREM0NGYyMmI0ODlmNEYxQTk1ODk2ODM2M0RGRUVGNzAiLCJpc3MiOiJ3ZWIzLXN0b3JhZ2UiLCJpYXQiOjE2NjUyMzU4NjIzMTgsIm5hbWUiOiJuZnQtbWFrZXIifQ"
+
 
 function App() {
   const [currentAccount, setCurrentAccount] = useState("");
@@ -67,12 +70,44 @@ function App() {
     }
   }
 
+  const putImage =async (client: Web3Storage, image: any) => {
+    const rootCid = await client.put(image.files, {
+      name: 'metadata',
+      maxRetries: 3
+    })
+    return rootCid;
+  }
+
+  const retriveFiles =async (client:Web3Storage, cid: CIDString) => {
+      const response = await client.get(cid);
+      if(!response) throw new Error("cannot retrive files");
+      const files = await response.files();
+      return files;
+  }
+
+  const uploadAndRetrive = async  (e: any) => {
+    const client = new Web3Storage({ token: API_KEY});
+    const image = e.target
+
+    const rootCid: CIDString = await putImage(client, image);
+    const files: Web3File[] = await retriveFiles(client, rootCid);
+
+    for (let file of files) {
+      setIPFSResult(file.cid);
+    }
+  }
+
   return (
     <div className="App">
       <div>
         <Button variant='contained' color='primary'sx={{ p: -2 }} onClick={connectWallet}>
           connect wallet
         </Button>
+      </div>
+      <p></p>
+      <div>
+        <input className='imageToIpfs' name="upload" type="file" accept='.jpg, .png' onChange={uploadAndRetrive} />
+        {IPFSResult}
       </div>
       <p></p>
       <div>
