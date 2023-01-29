@@ -12,7 +12,7 @@ const API_KEY = "eyJzdWIiOiJkaWQ6ZXRocjoweDEyZUM3OTFBREM0NGYyMmI0ODlmNEYxQTk1ODk
 
 function App() {
   const [currentAccount, setCurrentAccount] = useState("");
-  const [allNFTs, setAllNFTs] = useState("");
+  const [allNFTs, setAllNFTs] = useState([]);
   const [IPFSResult, setIPFSResult] = useState("");
   const [NFTName, setNFTName] = useState("");
   const [NFTDescription, setNFTDescription] = useState("");
@@ -156,6 +156,26 @@ function App() {
       <div>
         <img src="https://bafybeicgiaincg4bto72niuqgseflfy76gk7so6li5jm3r24mgr76jdbbe.ipfs.dweb.link/downloadable-bad75a2e-bbbc-4c02-8954-22f4234412ec.png" />
       </div>
+      {currentAccount &&
+          allNFTs
+            .slice(0)
+            .map((num, index) => {
+              return (
+                <div
+                  key={index}
+                  style={{
+                    width: "600px",
+                    backgroundColor: "#F8F8FF",
+                    marginTop: "16px",
+                    padding: "8px",
+                  }}
+                >
+                  <div>{num[0]}</div>
+                  <div>{num[1]}</div>
+                  <div>{num[2]}</div>
+                </div>
+              );
+            })}
     </div>
   );
 }
